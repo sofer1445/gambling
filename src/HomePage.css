@@ -1,0 +1,19 @@
+.container {
+    width: 50%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* סגנון כותרת */
+h1 {
+    color: #333;
+    font-size: 30px;
+    font-family: 'Lucida Sans Unicode';
+    text-align: center;
+    margin: 20px 0; /* מרווחים מסביב לכותרת */
+    padding: 10px 0; /* ריווח מעל ומתחת לכותרת */
+    border-bottom: 1px solid #ccc;
+}

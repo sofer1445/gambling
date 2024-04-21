@@ -1,0 +1,32 @@
+/*  כפתורים */
+.auth-buttons {
+    margin-top: 20px; /* רווח מעל הכפתורים */
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    width: 100px;
+    padding: 10px;
+    margin: 0 10px; /* מרווחים בין הכפתורים */
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s; /* אנימציה עבור שינוי צבע רקע */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#welcome {
+    font-size: 1.5em;
+    margin-top: 20px; /* מרווח מעל האלמנט */
+    padding: 20px; /* ריווחים פנימיים */
+    border: 2px solid #333; /* מסגרת */
+    border-radius: 5px; /* פינות מעוגלות */
+    background-color: #f9f9f9; /* צבע רקע */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* אפקט צל */
+}

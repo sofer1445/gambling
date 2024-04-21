@@ -1,10 +1,10 @@
-import React ,{ useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from "universal-cookie";
 
-function SignUp(){
+function SignUp() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [validPassword, setValidPassword] = useState('');
@@ -16,20 +16,24 @@ function SignUp(){
 
     const signUp = useCallback(async () => {
         try {
-            const res = await axios.post("http://localhost:9125/signUp", {
-                username: username,
-                password: password,
-                mail: mail,
+            const res = await axios.post("http://localhost:9125/sign-up", null, {
+                params: {
+                    username: username,
+                    password: password,
+                    mail: mail,
+                }
             });
-
-            if (res.data.success) {
-                cookies.set("secret", res.data.secret, {path: "/LoginPage"});
-                setData(res.data.data);
+            if (res.data.secret) {
                 setSuccess(true);
+                cookies.set("secret", res.data.secret, {path: "/LoginPage"});
+                setData(res.data);
             }
-        } catch (error) {
-            console.error(error);
+
+        }catch (e) {
+            console.error(e);
         }
+
+
     }, [username, password, mail]);
 
     const validatePassword = () => {
@@ -50,24 +54,30 @@ function SignUp(){
             <form>
                 <div className="form-group">
                     <label>Username:</label>
-                    <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter username" />
+                    <input type="text" className="form-control" value={username}
+                           onChange={(e) => setUsername(e.target.value)} placeholder="Enter username"/>
                 </div>
                 <div className="form-group">
                     <label>Password:</label>
-                    <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" />
+                    <input type="password" className="form-control" value={password}
+                           onChange={(e) => setPassword(e.target.value)} placeholder="Enter password"/>
                 </div>
                 <div className="form-group">
                     <label>Valid Password:</label>
                     <input type="password" className="form-control" value={validPassword} onChange={(e) =>
-                        setValidPassword(e.target.value)} placeholder="Enter password again" />
+                        setValidPassword(e.target.value)} placeholder="Enter password again"/>
                 </div>
                 <div className="form-group">
                     <label>Email:</label>
-                    <input type="email" className="form-control" value={mail} onChange={(e) => setMail(e.target.value)} placeholder="Enter email" />
+                    <input type="email" className="form-control" value={mail} onChange={(e) => setMail(e.target.value)}
+                           placeholder="Enter email"/>
                 </div>
-                {validatePassword() && validMail() && <button type="submit" className="btn btn-primary" onClick={signUp}>Sign Up</button>}
+                {validatePassword() && validMail() &&
+                    <button type="submit" className="btn btn-primary" onClick={signUp}>Sign Up</button>}
                 {
-                    !validatePassword() && <div className="alert alert-danger">Password must contain at least one number, one lowercase letter, one uppercase letter, one special character and no spaces</div>
+                    !validatePassword() &&
+                    <div className="alert alert-danger">Password must contain at least one number, one lowercase letter,
+                        one uppercase letter, one special character and no spaces</div>
                 }
                 {
                     !validMail() && <div className="alert alert-danger">Mail must contain @ and .</div>

@@ -2,31 +2,16 @@ import React ,{ useEffect,useCallback, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Errors} from "./error/Errors";
+import LoginForm from './components/LoginForm';
+import {getErrorText} from './helpers/errorTexts';
 
-function LoginPageComponent () {
+function LoginPage () {
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [errorCode, setErrorCode] = useState(null);
     const [secret, setSecret] = useState('');
     const [data, setData] = useState('111');
     const cookies = new Cookies();
-
-    const getErrorText = useCallback((errorCode) => {
-        if (errorCode === Errors.ERROR_NO_SUCH_MAIL) {
-            return "Invalid email or password";
-        }
-        if (errorCode === Errors.ERROR_SIGN_UP_PASSWORDS_DONT_MATCH) {
-            return "Passwords don't match";
-        }
-        if(errorCode === Errors.ERROR_LOGIN_WRONG_CREDS){
-            return "Invalid email or password";
-        }
-    }
-    , [
-        Errors.ERROR_NO_SUCH_MAIL,
-        Errors.ERROR_SIGN_UP_PASSWORDS_DONT_MATCH
-        ]);
 
     useEffect(() => {
         // componentDidMount
@@ -35,14 +20,6 @@ function LoginPageComponent () {
             setSecret(secretCookie);
         }
     }, [cookies]);
-
-    const handleInputChange = useCallback((key, event) => {
-        if (key === 'mail') {
-            setMail(event.target.value);
-        } else if (key === 'password') {
-            setPassword(event.target.value);
-        }
-    }, []);
 
     const login = useCallback(() => {
         axios.get("http://localhost:9125/login", {
@@ -66,33 +43,18 @@ function LoginPageComponent () {
     return (
         <div className="container">
             <h2>Login</h2>
-            <form>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input type="email" className="form-control" value={mail}
-                           onChange={handleInputChange.bind(this, 'mail')} placeholder="Enter email" />
-                </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <input type="password" className="form-control" value={password}
-                           onChange={handleInputChange.bind(this, 'password')} placeholder="Enter password" />
-                </div>
-                {
-                    secret ? (
-                        <div>
-                            <div>
-                                {"success"}
-                            </div>
-                        </div>
-                    ) : (
-                        <button type="submit" className="btn btn-primary" onClick={login}>Login</button>
-                    )
-                }
-
-            </form>
-            {errorCode && <div className="alert alert-danger">{getErrorText(errorCode)}</div>}
+            <LoginForm
+                mail={mail}
+                setMail={setMail}
+                password={password}
+                setPassword={setPassword}
+                login={login}
+                secret={secret}
+                errorCode={errorCode}
+                getErrorText={getErrorText}
+            />
         </div>
     );
 }
 
-export default LoginPageComponent;
+export default LoginPage

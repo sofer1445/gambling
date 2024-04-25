@@ -3,8 +3,8 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from "universal-cookie";
-import SignUpForm from './components/SignUpForm';
-import {getErrorText} from './helpers/errorTexts';
+import SignUpForm from '../components/SignUpForm';
+import {getErrorText} from '../helpers/errorTexts';
 
 function SignUp() {
     const [username, setUsername] = useState('');

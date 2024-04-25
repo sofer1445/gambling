@@ -2,8 +2,10 @@ import React ,{ useEffect,useCallback, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LoginForm from './components/LoginForm';
-import {getErrorText} from './helpers/errorTexts';
+import LoginForm from '../components/LoginForm';
+import {getErrorText} from '../helpers/errorTexts';
+import MainPage from './MainPage';
+import {useNavigate} from "react-router-dom";
 
 function LoginPage () {
     const [mail, setMail] = useState('');
@@ -12,6 +14,7 @@ function LoginPage () {
     const [secret, setSecret] = useState('');
     const [data, setData] = useState('111');
     const cookies = new Cookies();
+    const navigate = useNavigate();
 
     useEffect(() => {
         // componentDidMount
@@ -32,7 +35,6 @@ function LoginPage () {
                 cookies.set("secret ", res.data.secret, {path: "/LoginPage"});
                 setSecret(res.data.secret);
                 setData(res.data.data);
-
             } else {
                 setErrorCode(res.data.errorCode);
             }
@@ -52,7 +54,9 @@ function LoginPage () {
                 secret={secret}
                 errorCode={errorCode}
                 getErrorText={getErrorText}
+
             />
+
         </div>
     );
 }

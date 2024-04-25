@@ -37,7 +37,7 @@ const SignUpForm = ({username, setUsername, password, setPassword, validPassword
             validPassword !== password && <div className="alert alert-danger">Passwords do not match</div>
         }
         <div>
-            {success && <div className="alert alert-success">Success! <button onClick={handleSuccessClick}>Login</button>
+            {success && <div className="alert alert-success"><button onClick={handleSuccessClick}>Login</button>
             </div>}
             {errorCode && <div className="alert alert-danger">{getErrorText(errorCode)}</div>}
         </div>

@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import EditUserForm from '../components/EditUserForm';
 import DeleteUserForm from '../components/DeleteUserForm';
 import LeagueTable from '../components/gameComponents/LeagueTable';
+import GameRounds from "../components/gameComponents/GameRounds";
+import axios from "axios";
+import Cookies from "universal-cookie";
 
 
 const MainPage = () => {
     const { secret } = useParams();
+    const [secretNewUser, setSecretNewUser] = useState(secret);
     const [isEditing, setIsEditing] = useState(false);
     const [showLeagueTable, setShowLeagueTable] = useState(false);
+    const [showRoundGames, setShowRoundGames] = useState(false);
+    const [teamNames, setTeamNames] = useState([]);
+    const cookies = new Cookies();
+
+    useEffect(() => {
+        axios.get("http://localhost:9125/get-name-clubs")
+            .then((res) => {
+                setTeamNames(res.data);
+            });
+    }, []);
+
+
 
     return (
         <div className="container">
@@ -17,6 +33,13 @@ const MainPage = () => {
                 {showLeagueTable ? 'Hide' : 'Show'} League Table
             </button>
             {showLeagueTable && <LeagueTable />}
+            <button onClick={() => setShowRoundGames(!showRoundGames)} className="btn btn-primary">
+                {showRoundGames ? 'Hide' : 'Show'} Round Games
+            </button>
+            {showRoundGames && <GameRounds
+                secret={secretNewUser}
+                teams={teamNames}
+            />}
             {isEditing ? (
                 <>
                     <EditUserForm secret={secret} />

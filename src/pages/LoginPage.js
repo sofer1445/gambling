@@ -32,7 +32,7 @@ function LoginPage () {
             }
         }).then((res) => {
             if (res.data.success) {
-                cookies.set("secret ", res.data.secret, {path: "/LoginPage"});
+                cookies.set("secret", res.data.secret, {path: "/LoginPage"});
                 setSecret(res.data.secret);
                 setData(res.data.data);
             } else {

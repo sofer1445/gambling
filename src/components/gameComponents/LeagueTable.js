@@ -3,12 +3,16 @@ import axios from 'axios';
 
 const LeagueTable = () => {
     const [teams, setTeams] = useState([]);
+    // const cookies = new Cookies();
 
     useEffect(() => {
         axios.get("http://localhost:9125/get-clubs")
             .then((res) => {
                 const sortedTeams = res.data.sort((a, b) => b.points - a.points);
                 setTeams(sortedTeams);
+
+                const teamNames = sortedTeams.map(team => team.name);
+                // cookies.set('teamNames', JSON.stringify(teamNames));
             });
     }, []);
 

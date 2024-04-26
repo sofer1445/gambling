@@ -6,7 +6,7 @@ import LeagueTable from '../components/gameComponents/LeagueTable';
 import GameRounds from "../components/gameComponents/GameRounds";
 import axios from "axios";
 import Cookies from "universal-cookie";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MainPage = () => {
     const { secret } = useParams();
@@ -18,16 +18,15 @@ const MainPage = () => {
     const cookies = new Cookies();
 
     useEffect(() => {
-        axios.get("http://localhost:9125/get-name-clubs")
+        axios.get("http://localhost:9126/get-name-clubs")
             .then((res) => {
                 setTeamNames(res.data);
             });
     }, []);
 
 
-
     return (
-        <div className="container">
+        <div className="container" >
             <h2>Main Page</h2>
             <button onClick={() => setShowLeagueTable(!showLeagueTable)} className="btn btn-primary">
                 {showLeagueTable ? 'Hide' : 'Show'} League Table
@@ -37,7 +36,7 @@ const MainPage = () => {
                 {showRoundGames ? 'Hide' : 'Show'} Round Games
             </button>
             {showRoundGames && <GameRounds
-                secret={secretNewUser}
+                secretNewUser={secret}
                 teams={teamNames}
             />}
             {isEditing ? (

@@ -5,15 +5,17 @@
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center; /* ממרכז את הטקסט */
 }
 
-/* סגנון כותרת */
 h1 {
-    color: #333;
-    font-size: 30px;
+    color: #fff; /* צבע הטקסט לבן */
+    background-color: #333; /* רקע כהה */
+    font-size: 40px; /* מגדיל את גודל הטקסט */
     font-family: 'Lucida Sans Unicode';
     text-align: center;
-    margin: 20px 0; /* מרווחים מסביב לכותרת */
-    padding: 10px 0; /* ריווח מעל ומתחת לכותרת */
+    margin: 20px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #ccc;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* מוסיף צללית לטקסט */
 }

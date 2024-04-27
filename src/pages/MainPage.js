@@ -18,7 +18,7 @@ const MainPage = () => {
     const cookies = new Cookies();
 
     useEffect(() => {
-        axios.get("http://localhost:9126/get-name-clubs")
+        axios.get("http://localhost:9125/get-name-clubs")
             .then((res) => {
                 setTeamNames(res.data);
             });

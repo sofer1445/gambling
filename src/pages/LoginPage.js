@@ -4,7 +4,6 @@ import Cookies from "universal-cookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginForm from '../components/LoginForm';
 import {getErrorText} from '../helpers/errorTexts';
-import MainPage from './MainPage';
 import {useNavigate} from "react-router-dom";
 
 function LoginPage () {
@@ -32,7 +31,7 @@ function LoginPage () {
             }
         }).then((res) => {
             if (res.data.success) {
-                cookies.set("secret", res.data.secret, {path: "/LoginPage"});
+                cookies.set("secret ", res.data.secret, {path: "/LoginPage"});
                 setSecret(res.data.secret);
                 setData(res.data.data);
             } else {

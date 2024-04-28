@@ -27,7 +27,9 @@ const LoginForm = ({mail, setMail, password, setPassword, login, secret, errorCo
             {
                 secret ? (
                     <div>
-                        {"success"}
+                        {
+                            login && <div className="alert alert-success">Login successful</div>
+                        }
                         <button onClick={() => navigate(`/MainPage/${secret}`)} className="btn btn-primary">Main Page</button>
                     </div>
                 ) : (

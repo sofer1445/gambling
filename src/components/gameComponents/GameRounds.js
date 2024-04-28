@@ -97,8 +97,11 @@ const GameRounds = ({ secretNewUser, teams }) => {
                 currentRoundIndex === rounds.length - 1
                 || gameClock < 90
             }>Next Round</button>
-            <button onClick={showGameHistory}>Show Game History</button>
-            <button onClick={() => setCurrentRoundIndex(0)}>Restart</button>
+            <button onClick={showGameHistory}
+                    disabled={results.length === 0}>Show Game History</button>
+            <button onClick={() => setCurrentRoundIndex(0)}
+                    disabled={currentRoundIndex === 0}
+            >Restart</button>
         </div>
     );
 }

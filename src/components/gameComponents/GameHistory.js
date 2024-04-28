@@ -25,14 +25,6 @@ const GameHistory = ({fromGame, toGame}) => {
         fetchAllMatches();
     }, []);
 
-    const getLastSeenGameId = () => {
-        if (toGame) {
-            return toGame;
-        } else {
-            return 0;
-        }
-
-    }
 
     return (
         <div>

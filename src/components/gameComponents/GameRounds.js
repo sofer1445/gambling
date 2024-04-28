@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { generateRounds } from '../../helpers/generateRounds';
 import GameClock from "../../styled/GameClock";
 import Table from 'react-bootstrap/Table';
 import GameRow from './GameRow';
+import GameHistory from './GameHistory';
 
 const GameRounds = ({ secretNewUser, teams }) => {
     const [rounds, setRounds] = useState([]);
@@ -11,14 +12,13 @@ const GameRounds = ({ secretNewUser, teams }) => {
     const [gameClock, setGameClock] = useState(0);
     const [results, setResults] = useState([]);
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
-
-
+    const [showHistory, setShowHistory] = useState(false);
 
     useEffect(() => {
         setRounds(generateRounds(teams));
     }, [teams]);
 
-    const fetchGameResults = (game) => {
+    const fetchGameResults = useCallback((game) => {
         return axios.get("http://localhost:9125/generate-result", {
             params: {
                 secretNewUser: secretNewUser,
@@ -26,15 +26,15 @@ const GameRounds = ({ secretNewUser, teams }) => {
                 team2Name: game.team2Name,
             }
         }).then((res) => {
-            game.result = res.data; // Save the result in the game object
-            setResults(prevResults => [...prevResults, game]); // Save the game in the results array
-            return res;
+            game.result = res.data;
+            game.id = res.data.idMatch;
+            setResults(prevResults => [...prevResults.filter(g => g.id !== game.id), game]);
         }).catch((error) => {
             console.error("Error fetching game results: ", error);
         });
-    };
+    }, [secretNewUser]);
 
-    const startGameClock = () => {
+    const startGameClock = useCallback(() => {
         setGameClock(0);
         const gameInterval = setInterval(() => {
             setGameClock(prevGameClock => {
@@ -45,30 +45,33 @@ const GameRounds = ({ secretNewUser, teams }) => {
                 }
                 return prevGameClock + 1;
             });
-        }, 3000); // Run every 3 seconds
-    };
+        }, 300);
+    }, []);
 
-    const startRound = () => {
+    const startRound = useCallback(() => {
         setIsStartButtonDisabled(true);
-        Promise.all(rounds[currentRoundIndex].map(fetchGameResults)).then(() => {
-            startGameClock();
-        });
-    };
+        Promise.all(rounds[currentRoundIndex].map(fetchGameResults)).then(startGameClock);
+    }, [currentRoundIndex, rounds, fetchGameResults, startGameClock]);
 
-    const nextRound = () => {
+    const nextRound = useCallback(() => {
         setCurrentRoundIndex(prevRoundIndex => prevRoundIndex + 1);
-        setResults([]); // Reset the results
         if (gameClock < 90) {
             setIsStartButtonDisabled(true);
         } else {
             setIsStartButtonDisabled(false);
         }
-    };
+    }, [gameClock]);
 
-    const backRound = () => {
-        setCurrentRoundIndex(prevRoundIndex => prevRoundIndex - 1);
-    };
+    const showGameHistory = useCallback(() => {
+        setShowHistory(true);
+    }, []);
 
+    if (showHistory) {
+        return <GameHistory
+            fromGame={results[0]?.id}
+            toGame={results[results.length - 1]?.id}
+        />;
+    }
 
     return (
         <div>
@@ -84,8 +87,8 @@ const GameRounds = ({ secretNewUser, teams }) => {
                 </tr>
                 </thead>
                 <tbody>
-                {rounds[currentRoundIndex]?.map((game, gameIndex) => (
-                    <GameRow game={game} result={game.result} gameClock={gameClock} key={gameIndex}/>
+                {rounds[currentRoundIndex]?.map((game) => (
+                    <GameRow game={game} result={game.result} gameClock={gameClock} key={game.id}/>
                 ))}
                 </tbody>
             </Table>
@@ -94,7 +97,7 @@ const GameRounds = ({ secretNewUser, teams }) => {
                 currentRoundIndex === rounds.length - 1
                 || gameClock < 90
             }>Next Round</button>
-            <button onClick={backRound} disabled={currentRoundIndex === 0}>Back Round</button>
+            <button onClick={showGameHistory}>Show Game History</button>
             <button onClick={() => setCurrentRoundIndex(0)}>Restart</button>
         </div>
     );

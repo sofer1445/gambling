@@ -34,7 +34,7 @@ const Result = styled.p`
 `;
 
 const GameResult = ({match, gameClock}) => {
-    const [result, setResult] = useState(match ? match.result : '0-0');
+    const [result, setResult] = useState('0-0');
     const [highlight, setHighlight] = useState(false);
 
     useEffect(() => {

@@ -1,22 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { generateRounds } from '../../helpers/generateRounds';
 import GameClock from "../../styled/GameClock";
 import Table from 'react-bootstrap/Table';
 import GameRow from './GameRow';
 import GameHistory from './GameHistory';
+import { useRounds } from '../../helpers/useRounds';
+
 
 const GameRounds = ({ secretNewUser, teams }) => {
-    const [rounds, setRounds] = useState([]);
+    const rounds = useRounds(teams);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [gameClock, setGameClock] = useState(0);
     const [results, setResults] = useState([]);
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
 
-    useEffect(() => {
-        setRounds(generateRounds(teams));
-    }, [teams]);
 
     const fetchGameResults = useCallback((game) => {
         return axios.get("http://localhost:9125/generate-result", {
@@ -73,37 +71,40 @@ const GameRounds = ({ secretNewUser, teams }) => {
         />;
     }
 
+
     return (
-        <div>
-            <h2>Game Round {currentRoundIndex + 1}</h2>
-            <GameClock time={gameClock} />
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Team 1</th>
-                    <th></th>
-                    <th>Team 2</th>
-                    <th>Real time results</th>
-                </tr>
-                </thead>
-                <tbody>
-                {rounds[currentRoundIndex]?.map((game) => (
-                    <GameRow game={game} result={game.result} gameClock={gameClock} key={game.id}/>
-                ))}
-                </tbody>
-            </Table>
-            <button onClick={startRound} disabled={isStartButtonDisabled}>Start Round</button>
-            <button onClick={nextRound} disabled={
-                currentRoundIndex === rounds.length - 1
-                || gameClock < 90
-            }>Next Round</button>
-            <button onClick={showGameHistory}
-                    disabled={results.length === 0}>Show Game History</button>
-            <button onClick={() => setCurrentRoundIndex(0)}
-                    disabled={currentRoundIndex === 0}
-            >Restart</button>
-        </div>
-    );
+            <div>
+                <h2>Game Round {currentRoundIndex + 1}</h2>
+                <GameClock time={gameClock} />
+                <Table striped bordered hover>
+                    <thead>
+                    <tr>
+                        <th>Team 1</th>
+                        <th></th>
+                        <th>Team 2</th>
+                        <th>Real time results</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {rounds[currentRoundIndex]?.map((game) => (
+                        <GameRow game={game} result={game.result} gameClock={gameClock} key={game.id}/>
+                    ))}
+                    </tbody>
+                </Table>
+                <button onClick={startRound} disabled={isStartButtonDisabled}>Start Round</button>
+                <button onClick={nextRound} disabled={
+                    currentRoundIndex === rounds.length - 1
+                    || gameClock < 90
+                }>Next Round</button>
+                <button onClick={showGameHistory}
+                        disabled={results.length === 0}>Show Game History</button>
+                <button onClick={() => setCurrentRoundIndex(0)}
+                        disabled={currentRoundIndex === 0}
+                >Restart</button>
+            </div>
+        );
+
+
 }
 
 export default GameRounds;

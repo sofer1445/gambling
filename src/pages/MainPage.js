@@ -4,6 +4,7 @@ import EditUserForm from '../components/EditUserForm';
 import DeleteUserForm from '../components/DeleteUserForm';
 import LeagueTable from '../components/gameComponents/LeagueTable';
 import GameRounds from "../components/gameComponents/GameRounds";
+import BettingOddsDisplay from "../components/gameComponents/BettingOddsDisplay";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,6 +17,7 @@ const MainPage = () => {
     const [showRoundGames, setShowRoundGames] = useState(false);
     const [teamNames, setTeamNames] = useState([]);
     const cookies = new Cookies();
+    const [showOdds, setShowOdds] = useState(false);
 
     useEffect(() => {
         axios.get("http://localhost:9125/get-name-clubs")
@@ -23,7 +25,6 @@ const MainPage = () => {
                 setTeamNames(res.data);
             });
     }, []);
-
 
     return (
         <div className="container" >
@@ -35,9 +36,17 @@ const MainPage = () => {
             <button onClick={() => setShowRoundGames(!showRoundGames)} className="btn btn-primary">
                 {showRoundGames ? 'Hide' : 'Show'} Round Games
             </button>
+
             {showRoundGames && <GameRounds
                 secretNewUser={secret}
                 teams={teamNames}
+            />}
+            <button onClick={() => setShowOdds(!showOdds)} className="btn btn-primary">
+                {showOdds ? 'Hide' : 'Show'} Betting Odds
+            </button>
+            {showOdds && <BettingOddsDisplay
+                teams={teamNames}
+                index={0}
             />}
             {isEditing ? (
                 <>

@@ -9,9 +9,9 @@
 }
 
 h1 {
-    color: #fff; /* צבע הטקסט לבן */
-    background-color: #333; /* רקע כהה */
-    font-size: 40px; /* מגדיל את גודל הטקסט */
+    color: #fff;
+    background-color: #333;
+    font-size: 40px;
     font-family: 'Lucida Sans Unicode';
     text-align: center;
     margin: 20px 0;

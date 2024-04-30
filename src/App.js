@@ -1,7 +1,7 @@
 import './App.css';
 import React from "react";
 import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
 import LoginPage from "./pages/LoginPage";
 import SignUp  from "./pages/SignUp";
 import MainPage from "./pages/MainPage";
@@ -25,12 +25,11 @@ class App extends React.Component {
             <div id="App" className="container">
                 <h1 className="text-center">Gambling Platfrom</h1>
                 <BrowserRouter>
-                    <NavLink style={navLinkStyle} to={"/HomePage"} className={"nav btn btn-primary m-2"}>HomePage</NavLink>
-                    <NavLink style={navLinkStyle} to={"/LoginPage"} className={"nav btn btn-primary m-2"}>LoginPage</NavLink>
-                    <NavLink style={navLinkStyle} to={"/SignUp"} className={"nav btn btn-primary m-2"}>SignUp</NavLink>
-
+                    <NavLink style={{...navLinkStyle, backgroundColor: "burlywood" }} to={"/AboutPage"} className={"nav btn m-2"}>About</NavLink>
+                    <NavLink style={{...navLinkStyle, backgroundColor: "burlywood"}} to={"/LoginPage"} className={"nav btn m-2"}>Login</NavLink>
+                    <NavLink style={{...navLinkStyle, backgroundColor: "burlywood"}} to={"/SignUp"} className={"nav btn m-2"}>Sign Up</NavLink>
                     <Routes>
-                        <Route path={"/HomePage"} element={<HomePage/>}/>
+                        <Route path={"/AboutPage"} element={<AboutPage/>}/>
                         <Route path={"/LoginPage"} element={<LoginPage/>}/>
                         <Route path={"/SignUp"} element={<SignUp/>}/>
                         <Route path={"/MainPage/:secret"} element={<MainPage/>}/>

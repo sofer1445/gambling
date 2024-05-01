@@ -1,21 +1,20 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {useCallback, useState} from 'react';
 import axios from 'axios';
 import GameClock from "../../styled/GameClock";
 import Table from 'react-bootstrap/Table';
 import GameRow from './GameRow';
 import GameHistory from './GameHistory';
-import { useRounds } from '../../helpers/useRounds';
-import CheckBetButton from './CheckBetButton';
+import {useRounds} from '../../helpers/useRounds';
+import checkBet from "../../helpers/checkBet";
+import getAllBets from "../../helpers/getAllBets";
 
-
-const GameRounds = ({ secretNewUser, teams }) => {
+const GameRounds = ({secretNewUser, teams}) => {
     const rounds = useRounds(teams);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [gameClock, setGameClock] = useState(0);
     const [results, setResults] = useState([]);
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
-
 
     const fetchGameResults = useCallback((game) => {
         return axios.get("http://localhost:9125/generate-result", {
@@ -72,11 +71,34 @@ const GameRounds = ({ secretNewUser, teams }) => {
         />;
     }
 
+    const handleCheckAllBets = async (event) => {
+        debugger;
+        event.preventDefault();
+        const checkAllBets = async () => {
+            const fetchedBets = await getAllBets();
+            if (fetchedBets !== null) {
+                const checkedBets = [];
+                for (const game of rounds[currentRoundIndex]) {
+                    const bet = fetchedBets.find(bet => bet.secretUser === secretNewUser);
+                    if (bet) {
+                        const checkedBet = await checkBet({
+                            idBet: bet.idBet,
+                            homeTeam: game.team1Name,
+                            awayTeam: game.team2Name
+                        });
+                        checkedBets.push(checkedBet);
+                    }
+                }
+                console.log("Checked bets: ", checkedBets);
+            }
+        };
+        checkAllBets();
+    };
 
     return (
         <div>
             <h2>Game Round {currentRoundIndex + 1}</h2>
-            <GameClock time={gameClock} />
+            <GameClock time={gameClock}/>
             <Table striped bordered hover>
                 <thead>
                 <tr>
@@ -96,27 +118,22 @@ const GameRounds = ({ secretNewUser, teams }) => {
             <button onClick={nextRound} disabled={
                 currentRoundIndex === rounds.length - 1
                 || gameClock < 90
-            }>Next Round</button>
+            }>Next Round
+            </button>
             <button onClick={showGameHistory}
-                    disabled={results.length === 0}>Show Game History</button>
+                    disabled={results.length === 0}>Show Game History
+            </button>
             <button onClick={() => setCurrentRoundIndex(0)}
                     disabled={currentRoundIndex === 0}
-            >Restart</button>
-            {gameClock === 90 && rounds[currentRoundIndex]?.map((game, i) => {
-                // Determine the winning team or draw
-                return (
-                    <CheckBetButton
-                        key={i}
-                        idBet={game.id}
-                        homeTeam={game.team1Name}
-                        awayTeam={game.team2Name}
-                    />
-                );
-            })}
+            >Restart
+            </button>
+            {gameClock === 90 && (
+                <form onSubmit={handleCheckAllBets}>
+                    <button type="submit">Check All Bets</button>
+                </form>
+            )}
         </div>
     );
-
-
 }
 
 export default GameRounds;

@@ -8,6 +8,7 @@ import BettingOddsDisplay from "../components/gameComponents/BettingOddsDisplay"
 import axios from "axios";
 import Cookies from "universal-cookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import UserInfoButton  from "../components/gameComponents/UserInfoButton";
 
 const MainPage = () => {
     const { secret } = useParams();
@@ -18,6 +19,7 @@ const MainPage = () => {
     const [teamNames, setTeamNames] = useState([]);
     const cookies = new Cookies();
     const [showOdds, setShowOdds] = useState(false);
+    const [showUserInfo, setShowUserInfo] = useState(false);
 
     useEffect(() => {
         axios.get("http://localhost:9125/get-name-clubs")
@@ -61,6 +63,8 @@ const MainPage = () => {
                     <DeleteUserForm secret={secret} />
                 </>
             )}
+            <button onClick={() => setShowUserInfo(!showUserInfo)} className="btn btn-primary"> Show User Info</button>
+            {showUserInfo && <UserInfoButton secretNewUser={secretNewUser} />}
         </div>
     );
 };

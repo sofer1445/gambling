@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Cookies from 'universal-cookie';
+import getAllBets from '../../helpers/getAllBets';
 
 const UserBets = () => {
     const [bets, setBets] = useState([]);
@@ -9,15 +9,9 @@ const UserBets = () => {
 
     useEffect(() => {
         const fetchBets = async () => {
-            try {
-                const response = await axios.get("http://localhost:9125/get-bets-by-secret", {
-                    params: {
-                        secretNewUser: secretNewUser
-                    }
-                });
-                setBets(response.data);
-            } catch (error) {
-                console.error("Error fetching bets: ", error);
+            const fetchedBets = await getAllBets();
+            if (fetchedBets !== null) {
+                setBets(fetchedBets);
             }
         };
 

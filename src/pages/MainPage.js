@@ -26,6 +26,8 @@ const MainPage = () => {
             });
     }, []);
 
+    cookies.set("secret", secret, {path: "/MainPage"});
+
     return (
         <div className="container" >
             <h2>Main Page</h2>
@@ -46,7 +48,7 @@ const MainPage = () => {
             </button>
             {showOdds && <BettingOddsDisplay
                 teams={teamNames}
-                index={0}
+                index={0} // לשנות את זה
             />}
             {isEditing ? (
                 <>

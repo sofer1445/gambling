@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import GameRow from './GameRow';
 import GameHistory from './GameHistory';
 import { useRounds } from '../../helpers/useRounds';
+import CheckBetButton from './CheckBetButton';
 
 
 const GameRounds = ({ secretNewUser, teams }) => {
@@ -73,36 +74,47 @@ const GameRounds = ({ secretNewUser, teams }) => {
 
 
     return (
-            <div>
-                <h2>Game Round {currentRoundIndex + 1}</h2>
-                <GameClock time={gameClock} />
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Team 1</th>
-                        <th></th>
-                        <th>Team 2</th>
-                        <th>Real time results</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {rounds[currentRoundIndex]?.map((game) => (
-                        <GameRow game={game} result={game.result} gameClock={gameClock} key={game.id}/>
-                    ))}
-                    </tbody>
-                </Table>
-                <button onClick={startRound} disabled={isStartButtonDisabled}>Start Round</button>
-                <button onClick={nextRound} disabled={
-                    currentRoundIndex === rounds.length - 1
-                    || gameClock < 90
-                }>Next Round</button>
-                <button onClick={showGameHistory}
-                        disabled={results.length === 0}>Show Game History</button>
-                <button onClick={() => setCurrentRoundIndex(0)}
-                        disabled={currentRoundIndex === 0}
-                >Restart</button>
-            </div>
-        );
+        <div>
+            <h2>Game Round {currentRoundIndex + 1}</h2>
+            <GameClock time={gameClock} />
+            <Table striped bordered hover>
+                <thead>
+                <tr>
+                    <th>Team 1</th>
+                    <th></th>
+                    <th>Team 2</th>
+                    <th>Real time results</th>
+                </tr>
+                </thead>
+                <tbody>
+                {rounds[currentRoundIndex]?.map((game) => (
+                    <GameRow game={game} result={game.result} gameClock={gameClock} key={game.id}/>
+                ))}
+                </tbody>
+            </Table>
+            <button onClick={startRound} disabled={isStartButtonDisabled}>Start Round</button>
+            <button onClick={nextRound} disabled={
+                currentRoundIndex === rounds.length - 1
+                || gameClock < 90
+            }>Next Round</button>
+            <button onClick={showGameHistory}
+                    disabled={results.length === 0}>Show Game History</button>
+            <button onClick={() => setCurrentRoundIndex(0)}
+                    disabled={currentRoundIndex === 0}
+            >Restart</button>
+            {gameClock === 90 && rounds[currentRoundIndex]?.map((game, i) => {
+                // Determine the winning team or draw
+                return (
+                    <CheckBetButton
+                        key={i}
+                        idBet={game.id}
+                        homeTeam={game.team1Name}
+                        awayTeam={game.team2Name}
+                    />
+                );
+            })}
+        </div>
+    );
 
 
 }

@@ -98,20 +98,7 @@ const BettingOddsDisplay = ({ teams , index }) => {
                     <input type="number" value={betAmount} onChange={handleBetAmountChange} max={coins} />
                     <p>Potential return: {potentialReturn}</p>
                     <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} />
-                    {Object.keys(selectedGames).map((game, i) => {
-                        // Find the correct game object
-                        const gameObj = rounds[index].find(g => `${g.team1Name} vs ${g.team2Name}` === game);
-                        // Determine the winning team or draw
-                        const betOnWin = selectedGames[game] === '1' ? gameObj.team1Name : selectedGames[game] === 'X' ? 'draw' : gameObj.team2Name;
-                        return (
-                            <AddBetButton
-                                key={i}
-                                secretNewUser={secret}
-                                betOnWin={betOnWin}
-                                handleButtonClick={handleButtonClick}
-                            />
-                        );
-                    })}
+                    <AddBetButton secretNewUser={secret} selectedGames={selectedGames} handleButtonClick={handleButtonClick} rounds={rounds[index]} />
                 </div>
             ) : (
                 <p>Loading...</p>

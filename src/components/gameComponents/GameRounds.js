@@ -7,6 +7,7 @@ import GameHistory from './GameHistory';
 import {useRounds} from '../../helpers/useRounds';
 import checkBet from "../../helpers/checkBet";
 import getAllBets from "../../helpers/getAllBets";
+import { deleteBets } from '../../helpers/betHelpers';
 import Cookies from "universal-cookie";
 
 
@@ -58,12 +59,10 @@ const GameRounds = ({secretNewUser, teams}) => {
     const nextRound = useCallback(() => {
         setCurrentRoundIndex(prevRoundIndex => prevRoundIndex + 1);
         cookies.set("round", currentRoundIndex + 1, {path: "/MainPage"});
-        if (gameClock < 90) {
-            setIsStartButtonDisabled(true);
-        } else {
-            setIsStartButtonDisabled(false);
-        }
-    }, [gameClock]);
+        setIsStartButtonDisabled(gameClock < 90);
+        deleteBets(secretNewUser);
+        setGameClock(0);
+    }, [gameClock, secretNewUser]);
 
     const showGameHistory = useCallback(() => {
         setShowHistory(true);
@@ -77,7 +76,6 @@ const GameRounds = ({secretNewUser, teams}) => {
     }
 
     const handleCheckAllBets = async (event) => {
-        debugger;
         event.preventDefault();
         const checkAllBets = async () => {
             const fetchedBets = await getAllBets();
@@ -99,6 +97,9 @@ const GameRounds = ({secretNewUser, teams}) => {
         };
         checkAllBets();
     };
+
+
+
 
     return (
         <div>

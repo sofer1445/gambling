@@ -7,6 +7,8 @@ import GameHistory from './GameHistory';
 import {useRounds} from '../../helpers/useRounds';
 import checkBet from "../../helpers/checkBet";
 import getAllBets from "../../helpers/getAllBets";
+import Cookies from "universal-cookie";
+
 
 const GameRounds = ({secretNewUser, teams}) => {
     const rounds = useRounds(teams);
@@ -15,6 +17,8 @@ const GameRounds = ({secretNewUser, teams}) => {
     const [results, setResults] = useState([]);
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
+    const cookies = new Cookies();
+
 
     const fetchGameResults = useCallback((game) => {
         return axios.get("http://localhost:9125/generate-result", {
@@ -53,6 +57,7 @@ const GameRounds = ({secretNewUser, teams}) => {
 
     const nextRound = useCallback(() => {
         setCurrentRoundIndex(prevRoundIndex => prevRoundIndex + 1);
+        cookies.set("round", currentRoundIndex + 1, {path: "/MainPage"});
         if (gameClock < 90) {
             setIsStartButtonDisabled(true);
         } else {

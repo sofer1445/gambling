@@ -50,7 +50,9 @@ const MainPage = () => {
             </button>
             {showOdds && <BettingOddsDisplay
                 teams={teamNames}
-                index={0} // לשנות את זה
+                index={
+                    cookies.get("round") ? cookies.get("round") : 0
+                } // לשנות את זה
             />}
             {isEditing ? (
                 <>

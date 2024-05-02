@@ -29,7 +29,6 @@ const MainPage = () => {
     }, []);
 
     cookies.set("secret", secret, {path: "/MainPage"});
-    cookies.set("round", 0, {path: "/MainPage"});
 
     return (
         <div className="container" >

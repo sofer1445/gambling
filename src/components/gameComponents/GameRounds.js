@@ -7,7 +7,7 @@ import GameHistory from './GameHistory';
 import {useRounds} from '../../helpers/useRounds';
 import checkBet from "../../helpers/checkBet";
 import getAllBets from "../../helpers/getAllBets";
-import { deleteBets } from '../../helpers/betHelpers';
+// import { deleteBets } from '../../helpers/betHelpers';
 import Cookies from "universal-cookie";
 
 
@@ -19,6 +19,7 @@ const GameRounds = ({secretNewUser, teams}) => {
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
     const cookies = new Cookies();
+    cookies.set("round", currentRoundIndex, {path: "/MainPage"});
 
 
     const fetchGameResults = useCallback((game) => {
@@ -60,8 +61,8 @@ const GameRounds = ({secretNewUser, teams}) => {
         setCurrentRoundIndex(prevRoundIndex => prevRoundIndex + 1);
         cookies.set("round", currentRoundIndex + 1, {path: "/MainPage"});
         setIsStartButtonDisabled(gameClock < 90);
-        deleteBets(secretNewUser);
-        setGameClock(0);
+        // deleteBets(secretNewUser);
+        setGameClock(0); 
     }, [gameClock, secretNewUser]);
 
     const showGameHistory = useCallback(() => {
@@ -81,9 +82,12 @@ const GameRounds = ({secretNewUser, teams}) => {
             const fetchedBets = await getAllBets();
             if (fetchedBets !== null) {
                 const checkedBets = [];
+                debugger;
                 for (const game of rounds[currentRoundIndex]) {
-                    const bet = fetchedBets.find(bet => bet.secretUser === secretNewUser);
-                    if (bet) {
+                    const bet = fetchedBets.find(bet =>
+                        (bet.predictedWinner && (bet.predictedWinner.name === game.team1Name || bet.predictedWinner.name === game.team2Name))
+                        || bet.draw
+                    );                    if (bet) {
                         const checkedBet = await checkBet({
                             idBet: bet.idBet,
                             homeTeam: game.team1Name,

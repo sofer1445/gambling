@@ -14,10 +14,10 @@ const checkBet = async ({ idBet, homeTeam, awayTeam }) => {
                 awayTeam: awayTeam
             }
         });
-        return response.data;
+        return { status: response.data, game: { homeTeam, awayTeam } };
     } catch (error) {
         console.error("Error checking bet: ", error);
-        return null;
+        return { status: false, error: error.message, game: { homeTeam, awayTeam } };
     }
 };
 

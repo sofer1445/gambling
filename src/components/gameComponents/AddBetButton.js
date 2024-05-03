@@ -3,6 +3,8 @@ import { useState } from "react";
 
 const AddBetButton = ({ secretNewUser, selectedGames, handleButtonClick , rounds }) => {
     const [betsReceived, setBetsReceived] = useState(0);
+    const [isBetPlaced, setIsBetPlaced] = useState(false);
+
     const addBets = async () => {
         const games = Object.keys(selectedGames);
         let betsReceivedCount = 0;
@@ -29,10 +31,11 @@ const AddBetButton = ({ secretNewUser, selectedGames, handleButtonClick , rounds
         setBetsReceived(betsReceivedCount);
         if (betsReceivedCount === games.length) {
             alert("All bets have been received by the server.");
+            setIsBetPlaced(true);
         }
     };
     return (
-        <button onClick={addBets}>Add Bets
+        <button onClick={addBets} disabled={isBetPlaced}>Add Bets
             {Object.keys(selectedGames).length > 0 && ` (${Object.keys(selectedGames).length})`}
         </button>
     );

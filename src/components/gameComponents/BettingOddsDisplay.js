@@ -6,13 +6,14 @@ import Cookies from "universal-cookie";
 import UserCoinsDisplay from "./UserCoinsDisplay";
 import AddBetButton from "./AddBetButton";
 
-const BettingOddsDisplay = ({ teams , index }) => {
+const BettingOddsDisplay = ({ teams , index, gameClock }) => {
     const [odds, setOdds] = useState({});
     const rounds = useRounds(teams);
     const [selectedGames, setSelectedGames] = useState({});
     const [totalOdds, setTotalOdds] = useState(1);
     const [betAmount, setBetAmount] = useState(0);
     const [coins, setCoins] = useState(0);
+    const [betPlaced, setBetPlaced] = useState(false);
 
 
 
@@ -37,6 +38,7 @@ const BettingOddsDisplay = ({ teams , index }) => {
         };
 
         fetchOdds();
+        setBetPlaced(false);
     }, [rounds, index]);
 
     const handleButtonClick = (clickedGame, result) => {
@@ -59,9 +61,10 @@ const BettingOddsDisplay = ({ teams , index }) => {
             return newSelectedGames;
         });
         // Find the correct game object
-        const gameObj = rounds[index].find(g => `${g.team1Name} vs ${g.team2Name}` === clickedGame);
-        // Determine the winning team or draw
-        const betOnWin = selectedGames[clickedGame] === '1' ? gameObj.team1Name : selectedGames[clickedGame] === 'X' ? 'draw' : gameObj.team2Name;
+        // const gameObj = rounds[index].find(g => `${g.team1Name} vs ${g.team2Name}` === clickedGame);
+        // // Determine the winning team or draw
+        // const betOnWin = selectedGames[clickedGame] === '1' ? gameObj.team1Name : selectedGames[clickedGame] === 'X' ? 'draw' : gameObj.team2Name;
+        setBetPlaced(true);
     };
 
     const handleBetAmountChange = (event) => {
@@ -95,10 +98,11 @@ const BettingOddsDisplay = ({ teams , index }) => {
                             key={gameIndex}
                         />
                     ))}
-                    <input type="number" value={betAmount} onChange={handleBetAmountChange} max={coins} />
+                    <input type="number" value={betAmount} onChange={handleBetAmountChange} max={coins}
+                           disabled={betPlaced || gameClock > 0}/>
                     <p>Potential return: {potentialReturn}</p>
                     <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} />
-                    <AddBetButton secretNewUser={secret} selectedGames={selectedGames} handleButtonClick={handleButtonClick} rounds={rounds[index]} />
+                    <AddBetButton secretNewUser={secret} selectedGames={selectedGames} handleButtonClick={handleButtonClick} rounds={rounds[index]} disabled={betPlaced || gameClock > 0} />
                 </div>
             ) : (
                 <p>Loading...</p>

@@ -20,6 +20,7 @@ const MainPage = () => {
     const cookies = new Cookies();
     const [showOdds, setShowOdds] = useState(false);
     const [showUserInfo, setShowUserInfo] = useState(false);
+    const [gameClock, setGameClock] = useState(0);
 
     useEffect(() => {
         axios.get("http://localhost:9125/get-name-clubs")
@@ -44,6 +45,8 @@ const MainPage = () => {
             {showRoundGames && <GameRounds
                 secretNewUser={secret}
                 teams={teamNames}
+                gameClock={gameClock}
+                setGameClock={setGameClock}
             />}
             <button onClick={() => setShowOdds(!showOdds)} className="btn btn-primary">
                 {showOdds ? 'Hide' : 'Show'} Betting Odds
@@ -52,7 +55,8 @@ const MainPage = () => {
                 teams={teamNames}
                 index={
                     cookies.get("round") ? cookies.get("round") : 0
-                } // לשנות את זה
+                }
+                gameClock={gameClock}
             />}
             {isEditing ? (
                 <>

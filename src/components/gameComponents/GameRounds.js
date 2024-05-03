@@ -7,18 +7,23 @@ import GameHistory from './GameHistory';
 import {useRounds} from '../../helpers/useRounds';
 import checkBet from "../../helpers/checkBet";
 import getAllBets from "../../helpers/getAllBets";
+import BetResults from './BetResults';
 // import { deleteBets } from '../../helpers/betHelpers';
 import Cookies from "universal-cookie";
 
 
-const GameRounds = ({secretNewUser, teams}) => {
+const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
     const rounds = useRounds(teams);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
-    const [gameClock, setGameClock] = useState(0);
     const [results, setResults] = useState([]);
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
+    const [showBetResults, setShowBetResults] = useState(false);
+    const [checkedBets, setCheckedBets] = useState([]);
+    const [ratio, setRatio] = useState(0);
+    const [totalWinning, setTotalWinning] = useState(0);
     const cookies = new Cookies();
+    const [betsChecked, setBetsChecked] = useState(false);
     cookies.set("round", currentRoundIndex, {path: "/MainPage"});
 
 
@@ -62,7 +67,9 @@ const GameRounds = ({secretNewUser, teams}) => {
         cookies.set("round", currentRoundIndex + 1, {path: "/MainPage"});
         setIsStartButtonDisabled(gameClock < 90);
         // deleteBets(secretNewUser);
-        setGameClock(0); 
+        setGameClock(0);
+        setShowBetResults(false);
+        setBetsChecked(false);
     }, [gameClock, secretNewUser]);
 
     const showGameHistory = useCallback(() => {
@@ -82,24 +89,44 @@ const GameRounds = ({secretNewUser, teams}) => {
             const fetchedBets = await getAllBets();
             if (fetchedBets !== null) {
                 const checkedBets = [];
-                debugger;
+                let totalBets = 0;
+                let correctBets = 0;
+                let totalWinning = 0;
                 for (const game of rounds[currentRoundIndex]) {
                     const bet = fetchedBets.find(bet =>
                         (bet.predictedWinner && (bet.predictedWinner.name === game.team1Name || bet.predictedWinner.name === game.team2Name))
                         || bet.draw
-                    );                    if (bet) {
+                    );
+                    if (bet) {
+                        totalBets++;
                         const checkedBet = await checkBet({
                             idBet: bet.idBet,
                             homeTeam: game.team1Name,
                             awayTeam: game.team2Name
                         });
+                        if (checkedBet && checkedBet.status) {
+                            correctBets++;
+                            totalWinning += bet.betAmount;
+                        }
                         checkedBets.push(checkedBet);
                     }
                 }
-                console.log("Checked bets: ", checkedBets);
+                const ratio = correctBets / totalBets;
+                if (checkedBets.length > 0 && ratio !== null) {
+                    setCheckedBets(checkedBets);
+                    setRatio(ratio);
+                    setTotalWinning(totalWinning);
+                    setShowBetResults(true);
+                }else {
+                    console.log("No bets to check" + checkedBets.length
+                    + " ratio: " + ratio + " totalWinning: " + totalWinning
+
+                    );
+                }
             }
         };
-        checkAllBets();
+        await checkAllBets();
+        setBetsChecked(true);
     };
 
 
@@ -139,8 +166,11 @@ const GameRounds = ({secretNewUser, teams}) => {
             </button>
             {gameClock === 90 && (
                 <form onSubmit={handleCheckAllBets}>
-                    <button type="submit">Check All Bets</button>
+                    <button type="submit" disabled={betsChecked}>Check All Bets</button>
                 </form>
+            )}
+            {showBetResults && (
+                <BetResults checkedBets={checkedBets} ratio={ratio} totalWinning={totalWinning} />
             )}
         </div>
     );

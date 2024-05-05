@@ -5,6 +5,7 @@ import BetRow from './BetRow';
 import Cookies from "universal-cookie";
 import UserCoinsDisplay from "./UserCoinsDisplay";
 import AddBetButton from "./AddBetButton";
+import calculateWinningAmount from "../../helpers/calculateWinningAmount";
 
 const BettingOddsDisplay = ({ teams , index, gameClock }) => {
     const [odds, setOdds] = useState({});
@@ -111,8 +112,12 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
                     <input type="number" value={betAmount} onChange={handleBetAmountChange} max={coins}
                            disabled={gameClock > 0}/>
                     <p>Potential return: {potentialReturn}</p>
-                    <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} />
-                    <AddBetButton secretNewUser={secret} selectedGames={selectedGames} handleButtonClick={handleButtonClick} rounds={rounds[index]} disabled={betPlaced || gameClock > 0} />
+                    <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} betPlaced={betPlaced} />
+                    <AddBetButton secretNewUser={secret} selectedGames={selectedGames}
+                                  handleButtonClick={handleButtonClick}
+                                  rounds={rounds[index]} disabled={betPlaced || gameClock > 0}
+                                  betAmount={betAmount/betCount}
+                    />
                 </div>
             ) : (
                 <p>Loading...</p>

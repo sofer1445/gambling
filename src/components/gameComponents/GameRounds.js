@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
 import GameClock from "../../styled/GameClock";
 import Table from 'react-bootstrap/Table';
@@ -16,7 +16,7 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
     const rounds = useRounds(teams);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [results, setResults] = useState([]);
-    const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
+
     const [showHistory, setShowHistory] = useState(false);
     const [showBetResults, setShowBetResults] = useState(false);
     const [checkedBets, setCheckedBets] = useState([]);
@@ -24,8 +24,10 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
     const [totalWinning, setTotalWinning] = useState(0);
     const cookies = new Cookies();
     const [betsChecked, setBetsChecked] = useState(false);
+    const [isRoundStarted, setIsRoundStarted] = useState(false);
+    const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     cookies.set("round", currentRoundIndex, {path: "/MainPage"});
-
+    cookies.set("betCount", 0, {path: "/MainPage"});
 
     const fetchGameResults = useCallback((game) => {
         return axios.get("http://localhost:9125/generate-result", {
@@ -58,15 +60,18 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
     }, []);
 
     const startRound = useCallback(() => {
-        setIsStartButtonDisabled(true);
-        Promise.all(rounds[currentRoundIndex].map(fetchGameResults)).then(startGameClock);
-    }, [currentRoundIndex, rounds, fetchGameResults, startGameClock]);
+        if (!isRoundStarted) {
+            setIsRoundStarted(true);
+            Promise.all(rounds[currentRoundIndex].map(fetchGameResults)).then(startGameClock);
+        }
+    }, [currentRoundIndex, rounds, fetchGameResults, startGameClock, isRoundStarted]);
 
     const nextRound = useCallback(() => {
         setCurrentRoundIndex(prevRoundIndex => prevRoundIndex + 1);
         cookies.set("round", currentRoundIndex + 1, {path: "/MainPage"});
         cookies.set("betCount", 0, {path: "/MainPage"});
-        setIsStartButtonDisabled(gameClock < 90);
+        setIsStartButtonDisabled(false);
+        setIsRoundStarted(false);
         // deleteBets(secretNewUser);
         setGameClock(0);
         setShowBetResults(false);
@@ -117,17 +122,12 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
 
         for (let i = rounds[currentRoundIndex].length - 1; i >= 0; i--) {
             const game = rounds[currentRoundIndex][i];
-            const {
-                totalBets: betTotalBets,
-                correctBets: betCorrectBets,
-                totalWinning: betTotalWinning, checkedBet
-            } = await checkSingleBet(game, fetchedBets);
+            const checkedBet = await checkSingleBet(game, fetchedBets);
 
-            totalBets += betTotalBets;
-            correctBets += betCorrectBets;
-            totalWinning += betTotalWinning;
-
-            if (checkedBet) {
+            if (checkedBet !== null && checkedBet !== false) {
+                totalBets += 1;
+                correctBets += checkedBet.correctBets;
+                totalWinning += checkedBet.totalWinning;
                 checkedBets.push(checkedBet);
             }
         }
@@ -178,7 +178,9 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
                 ))}
                 </tbody>
             </Table>
-            <button onClick={startRound} disabled={isStartButtonDisabled}>Start Round</button>
+            <button onClick={startRound} disabled={
+                isStartButtonDisabled || isRoundStarted || currentRoundIndex === rounds.length
+            }>Start Round</button>
             <button onClick={nextRound} disabled={
                 currentRoundIndex === rounds.length - 1
                 || gameClock < 90

@@ -15,12 +15,15 @@ const MainPage = () => {
     const [secretNewUser, setSecretNewUser] = useState(secret);
     const [isEditing, setIsEditing] = useState(false);
     const [showLeagueTable, setShowLeagueTable] = useState(false);
-    const [showRoundGames, setShowRoundGames] = useState(false);
+    // const [showRoundGames, setShowRoundGames] = useState(false);
     const [teamNames, setTeamNames] = useState([]);
     const cookies = new Cookies();
-    const [showOdds, setShowOdds] = useState(false);
+    //const [showOdds, setShowOdds] = useState(false);
     const [showUserInfo, setShowUserInfo] = useState(false);
     const [gameClock, setGameClock] = useState(0);
+    const [isLeagueTableVisible, setIsLeagueTableVisible] = useState(true);
+    const [isRoundGamesVisible, setIsRoundGamesVisible] = useState(true);
+    const [isOddsVisible, setIsOddsVisible] = useState(true);
 
     useEffect(() => {
         axios.get("http://localhost:9125/get-name-clubs")
@@ -37,27 +40,30 @@ const MainPage = () => {
             <button onClick={() => setShowLeagueTable(!showLeagueTable)} className="btn btn-primary">
                 {showLeagueTable ? 'Hide' : 'Show'} League Table
             </button>
-            {showLeagueTable && <LeagueTable />}
-            <button onClick={() => setShowRoundGames(!showRoundGames)} className="btn btn-primary">
-                {showRoundGames ? 'Hide' : 'Show'} Round Games
+            {showLeagueTable && <LeagueTable/>}
+            <button onClick={() => setIsRoundGamesVisible(!isRoundGamesVisible)} className="btn btn-primary">
+                {isRoundGamesVisible ? 'Hide' : 'Show'} Round Games
             </button>
-
-            {showRoundGames && <GameRounds
-                secretNewUser={secret}
-                teams={teamNames}
-                gameClock={gameClock}
-                setGameClock={setGameClock}
-            />}
-            <button onClick={() => setShowOdds(!showOdds)} className="btn btn-primary">
-                {showOdds ? 'Hide' : 'Show'} Betting Odds
+            <div style={{ display: isRoundGamesVisible ? 'block' : 'none' }}>
+                {isRoundGamesVisible && <GameRounds
+                    secretNewUser={secret}
+                    teams={teamNames}
+                    gameClock={gameClock}
+                    setGameClock={setGameClock}
+                />}
+            </div>
+            <button onClick={() => setIsOddsVisible(!isOddsVisible)} className="btn btn-primary">
+                {isOddsVisible ? 'Hide' : 'Show'} Betting Odds
             </button>
-            {showOdds && <BettingOddsDisplay
-                teams={teamNames}
-                index={
-                    cookies.get("round") ? cookies.get("round") : 0
-                }
-                gameClock={gameClock}
-            />}
+            <div style={{ display: isOddsVisible ? 'block' : 'none' }}>
+                {isOddsVisible && <BettingOddsDisplay
+                    teams={teamNames}
+                    index={
+                        cookies.get("round") ? cookies.get("round") : 0
+                    }
+                    gameClock={gameClock}
+                />}
+            </div>
             {isEditing ? (
                 <>
                     <EditUserForm secret={secret} />

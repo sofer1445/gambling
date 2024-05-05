@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 
-const AddBetButton = ({ secretNewUser, selectedGames, handleButtonClick , rounds }) => {
+const AddBetButton = ({ secretNewUser, selectedGames, handleButtonClick , rounds, betAmount }) => {
     const [betsReceived, setBetsReceived] = useState(0);
     const [isBetPlaced, setIsBetPlaced] = useState(false);
 
@@ -17,7 +17,7 @@ const AddBetButton = ({ secretNewUser, selectedGames, handleButtonClick , rounds
             const gameObj = rounds.find(g => `${g.team1Name} vs ${g.team2Name}` === game);
             const betOnWin = selectedGames[game] === '1' ? gameObj.team1Name : selectedGames[game] === 'X' ? 'Draw' : gameObj.team2Name;
             try {
-                const response = await axios.get(`http://localhost:9125/add-bet-win?secretNewUser=${secretNewUser}&betOnWin=${betOnWin}`);
+                const response = await axios.get(`http://localhost:9125/add-bet-win?secretNewUser=${secretNewUser}&betOnWin=${betOnWin}&betAmount=${betAmount}`);
                 if (response.data === true) {
                     console.log(`Bet on ${game} added successfully!`);
                     betsReceivedCount++;

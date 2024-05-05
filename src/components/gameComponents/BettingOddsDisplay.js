@@ -14,9 +14,17 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
     const [betAmount, setBetAmount] = useState(0);
     const [coins, setCoins] = useState(0);
     const [betPlaced, setBetPlaced] = useState(false);
+    const [betCount, setBetCount] = useState(0); // New state variable for bet count
 
 
 
+    useEffect(() => {
+        // Load the bet count from the cookie at the start
+        const savedBetCount = cookies.get('betCount');
+        if (savedBetCount) {
+            setBetCount(savedBetCount);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchOdds = async () => {
@@ -41,6 +49,7 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
         setBetPlaced(false);
     }, [rounds, index]);
 
+
     const handleButtonClick = (clickedGame, result) => {
         setSelectedGames(prevGames => {
             // Update the selected games
@@ -60,10 +69,11 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
             // Return the new selected games to update the state
             return newSelectedGames;
         });
-        // Find the correct game object
-        // const gameObj = rounds[index].find(g => `${g.team1Name} vs ${g.team2Name}` === clickedGame);
-        // // Determine the winning team or draw
-        // const betOnWin = selectedGames[clickedGame] === '1' ? gameObj.team1Name : selectedGames[clickedGame] === 'X' ? 'draw' : gameObj.team2Name;
+        setBetCount(prevBetCount => {
+            const newBetCount = prevBetCount + 1;
+            cookies.set('betCount', newBetCount); // Save the new bet count in a cookie
+            return newBetCount;
+        });
         setBetPlaced(true);
     };
 
@@ -99,7 +109,7 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
                         />
                     ))}
                     <input type="number" value={betAmount} onChange={handleBetAmountChange} max={coins}
-                           disabled={betPlaced || gameClock > 0}/>
+                           disabled={gameClock > 0}/>
                     <p>Potential return: {potentialReturn}</p>
                     <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} />
                     <AddBetButton secretNewUser={secret} selectedGames={selectedGames} handleButtonClick={handleButtonClick} rounds={rounds[index]} disabled={betPlaced || gameClock > 0} />

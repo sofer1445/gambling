@@ -15,7 +15,7 @@ const AddBetButton = ({ secretNewUser, selectedGames, handleButtonClick , rounds
         }
         for (const game of games) {
             const gameObj = rounds.find(g => `${g.team1Name} vs ${g.team2Name}` === game);
-            const betOnWin = selectedGames[game] === '1' ? gameObj.team1Name : selectedGames[game] === 'X' ? 'draw' : gameObj.team2Name;
+            const betOnWin = selectedGames[game] === '1' ? gameObj.team1Name : selectedGames[game] === 'X' ? 'Draw' : gameObj.team2Name;
             try {
                 const response = await axios.get(`http://localhost:9125/add-bet-win?secretNewUser=${secretNewUser}&betOnWin=${betOnWin}`);
                 if (response.data === true) {

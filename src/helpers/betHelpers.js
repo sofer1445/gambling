@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const deleteBets = (secretNewUser) => {
-    axios.delete("http://localhost:9125/delete-bets-user", {
+    axios.get("http://localhost:9125/delete-bets-user", {
         params: {
             secretNewUser: secretNewUser
         }

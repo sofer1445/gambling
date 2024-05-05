@@ -1,13 +1,7 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
-let cachedBets = null;
-
 const getAllBets = async () => {
-    if (cachedBets !== null) {
-        return cachedBets;
-    }
-
     const cookies = new Cookies();
     const secretNewUser = cookies.get("secret");
 
@@ -17,8 +11,7 @@ const getAllBets = async () => {
                 secretNewUser: secretNewUser
             }
         });
-        cachedBets = response.data;
-        return cachedBets;
+        return response.data;
     } catch (error) {
         console.error("Error fetching bets: ", error);
         return null;

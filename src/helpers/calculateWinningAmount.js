@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
-const calculateWinningAmount = async (ratio, amount) => {
+const calculateWinningAmount = async (ratio, amount, betCount) => {
     const cookies = new Cookies();
     const secretUser = cookies.get("secret");
 
@@ -10,7 +10,8 @@ const calculateWinningAmount = async (ratio, amount) => {
             params: {
                 secretUser: secretUser,
                 ratio: ratio,
-                amount: amount
+                amount: amount,
+                betCount: betCount
             }
         });
 

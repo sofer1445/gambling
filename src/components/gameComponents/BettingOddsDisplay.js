@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {useRounds} from "../../helpers/useRounds";
 import BetRow from './BetRow';
-import Cookies from "universal-cookie";
 import UserCoinsDisplay from "./UserCoinsDisplay";
 import AddBetButton from "./AddBetButton";
-import calculateWinningAmount from "../../helpers/calculateWinningAmount";
+import Cookies from 'universal-cookie';
+
 
 const BettingOddsDisplay = ({ teams , index, gameClock }) => {
     const [odds, setOdds] = useState({});
@@ -16,6 +16,7 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
     const [coins, setCoins] = useState(0);
     const [betPlaced, setBetPlaced] = useState(false);
     const [betCount, setBetCount] = useState(0); // New state variable for bet count
+    const [userOddsArray, setUserOddsArray] = useState([]);
 
 
 
@@ -37,7 +38,9 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
                             team2Name: game.team2Name
                         }
                     }).then((res) => {
-                        setOdds(prevOdds => ({...prevOdds, [`${game.team1Name} vs ${game.team2Name}`]: res.data}));
+                        setOdds(prevOdds => ({...prevOdds,
+                            [`${game.team1Name} vs ${game.team2Name}`]
+                            : res.data}));
                     });
                 });
 
@@ -67,6 +70,12 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
             // Keep two decimal places without rounding
             newTotalOdds = parseFloat(newTotalOdds.toFixed(2));
             setTotalOdds(newTotalOdds);
+            cookies.set('totalOdds', newTotalOdds); // Save the total odds in a cookie
+
+            const newUserOddsArray = [...userOddsArray, odds[clickedGame][result]];
+            setUserOddsArray(newUserOddsArray);
+            cookies.set('userOddsArray', JSON.stringify(newUserOddsArray));
+
             // Return the new selected games to update the state
             return newSelectedGames;
         });
@@ -112,6 +121,7 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
                     <input type="number" value={betAmount} onChange={handleBetAmountChange} max={coins}
                            disabled={gameClock > 0}/>
                     <p>Potential return: {potentialReturn}</p>
+                    <p>Total odds: {totalOdds}</p>
                     <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} betPlaced={betPlaced} />
                     <AddBetButton secretNewUser={secret} selectedGames={selectedGames}
                                   handleButtonClick={handleButtonClick}

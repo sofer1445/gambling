@@ -1,15 +1,47 @@
 body{
-  ont-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-background-color: #f4f4f4;
-text-align: center;
-  /*background: url("123.jpg") center;*/
+  background-color: #cccccc !important;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("foot1.jpeg") , url("foot1.jpeg");
+  background-repeat: no-repeat;
+  background-position: right top, left top;
+  background-size: 20%;
+
 }
 table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
+
+}
+
+
+#league-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#league-table th {
+  background-color: #ffffff;
+  color: white;
+  font-size: 1.5em;
+  padding: 15px;
+}
+
+
+.text-center {
+  text-align: center;
+  color: #0a0a0a;
+  font-size: 3em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+
 }
 
 table, th, td {
@@ -40,5 +72,30 @@ tr:nth-child(even) {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+.btn-primary {
+  background-color: burlywood  ;
+  margin: 10px;
+  padding: 10px 20px;
+  border-radius: 10px;
 
 
+}
+h2{
+  color: #0a0a0a;
+  font-size: 2em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+
+
+
+}
+
+.btn-danger{
+  background-color: red;
+  margin: 10px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+}

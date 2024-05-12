@@ -2,17 +2,17 @@ import React from 'react';
 
 function AboutPage() {
     return (
-       <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '20px',
-                margin: '20px',
-                border: '1px solid black',
-                textAlign: 'center',
-           backgroundColor: "#D3D3D3 ",
-           textShadow: "2px 2px 13px rgba(0, 0, 0, 0.5)"
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '20px',
+            margin: '20px',
+            border: '1px solid black',
+            textAlign: 'center',
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            textShadow: "2px 2px 13px rgba(0, 0, 0, 0.5)"
         }}>
             <h2>Football League Simulation and Betting Platform</h2>
             <h3>Game Regulations:</h3>

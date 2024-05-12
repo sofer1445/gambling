@@ -15,7 +15,7 @@ const DeleteUserForm = ({ secret }) => {
     }
 
     return (
-        <button onClick={handleDelete} className="btn btn-danger">Delete Account</button>
+        <button onClick={handleDelete} className="btn-danger">Delete Account</button>
     );
 }
 

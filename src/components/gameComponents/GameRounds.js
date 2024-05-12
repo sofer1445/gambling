@@ -10,6 +10,7 @@ import getAllBets from "../../helpers/getAllBets";
 import BetResults from './BetResults';
 // import { deleteBets } from '../../helpers/betHelpers';
 import Cookies from "universal-cookie";
+import {deleteBets} from "../../helpers/betHelpers";
 
 
 const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
@@ -27,7 +28,6 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
     const [isRoundStarted, setIsRoundStarted] = useState(false);
     const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false);
     cookies.set("round", currentRoundIndex, {path: "/MainPage"});
-    cookies.set("betCount", 0, {path: "/MainPage"});
 
     const fetchGameResults = useCallback((game) => {
         return axios.get("http://localhost:9125/generate-result", {
@@ -44,6 +44,11 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
             console.error("Error fetching game results: ", error);
         });
     }, [secretNewUser]);
+
+    useEffect(() => {
+        setTotalWinning(0);
+        cookies.set("betCount", 0, {path: "/MainPage"});
+    }, [currentRoundIndex]);
 
     const startGameClock = useCallback(() => {
         setGameClock(0);
@@ -70,9 +75,11 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
         setCurrentRoundIndex(prevRoundIndex => prevRoundIndex + 1);
         cookies.set("round", currentRoundIndex + 1, {path: "/MainPage"});
         cookies.set("betCount", 0, {path: "/MainPage"});
+        cookies.set('totalOdds', 1, {path: '/MainPage'});
+
         setIsStartButtonDisabled(false);
         setIsRoundStarted(false);
-        // deleteBets(secretNewUser);
+        deleteBets(secretNewUser);
         setGameClock(0);
         setShowBetResults(false);
         setBetsChecked(false);
@@ -157,6 +164,8 @@ const GameRounds = ({secretNewUser, teams, gameClock, setGameClock}) => {
         }
         setBetsChecked(true);
     };
+
+
 
 
     return (

@@ -1,33 +1,38 @@
 import './App.css';
 import React from "react";
-import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
+import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import AboutPage from "./pages/AboutPage";
 import LoginPage from "./pages/LoginPage";
-import SignUp  from "./pages/SignUp";
+import SignUp from "./pages/SignUp";
 import MainPage from "./pages/MainPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const navLinkStyle = ({isActive}) => isActive ? {
+const navLinkStyle = {
     color: "white",
-    backgroundColor: "red",
-    margin: 50,
-    align: "center",
-    column: "center"
+    backgroundColor: "burlywood",
+    margin: 10,
+    padding: 10,
+    borderRadius: 10,
+    textDecoration: 'none',
 
-} : undefined;
 
+
+};
 
 class App extends React.Component {
     state = {}
 
     render() {
         return (
-            <div id="App" className="container">
-                <h1 className="text-center">Gambling Platfrom</h1>
+            <div id="App" className="container d-flex flex-column align-items-center">
+                <h1 className="text-center">Gambling Platform</h1>
                 <BrowserRouter>
-                    <NavLink style={{...navLinkStyle, backgroundColor: "burlywood" }} to={"/AboutPage"} className={"nav btn m-2"}>About</NavLink>
-                    <NavLink style={{...navLinkStyle, backgroundColor: "burlywood"}} to={"/LoginPage"} className={"nav btn m-2"}>Login</NavLink>
-                    <NavLink style={{...navLinkStyle, backgroundColor: "burlywood"}} to={"/SignUp"} className={"nav btn m-2"}>Sign Up</NavLink>
+                    <nav className="d-flex flex-row">
+                        <NavLink style={navLinkStyle} to={"/AboutPage"} className={"nav btn m-2"}>About</NavLink>
+                        <NavLink style={navLinkStyle} to={"/LoginPage"} className={"nav btn m-2"}>Login</NavLink>
+                        <NavLink style={navLinkStyle} to={"/SignUp"} className={"nav btn m-2"}>Sign Up</NavLink>
+                        <NavLink style={navLinkStyle} to={"/Logout"} className={"nav btn m-2"}>Log out</NavLink>
+                    </nav>
                     <Routes>
                         <Route path={"/AboutPage"} element={<AboutPage/>}/>
                         <Route path={"/LoginPage"} element={<LoginPage/>}/>

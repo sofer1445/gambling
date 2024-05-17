@@ -11,15 +11,16 @@ const BetResults = ({  checkedBets, ratio, totalWinning}) => {
     const cookies = new Cookies();
     const [totalOdds, setTotalOdds] = useState(cookies.get('totalOdds' , {path: "/MainPage"}));
     const [betCount, setBetCount] = useState(cookies.get('betCount' , {path: "/MainPage"}));
-
     useEffect(() => {
         const fetchWinningAmount = async () => {
             const amount = await calculateWinningAmount(totalOdds/betCount, totalWinning, betCount);
             setWinningAmount(amount);
         };
 
-        fetchWinningAmount();
-    }, [ratio, totalWinning]);
+        fetchWinningAmount().then(r =>
+            console.log(r)
+        );
+    }, [betCount, totalOdds, totalWinning]);
 
     useEffect(() => {
         setTotalOdds(cookies.get('totalOdds' , {path: "/MainPage"}));
@@ -34,7 +35,7 @@ const BetResults = ({  checkedBets, ratio, totalWinning}) => {
                 <Card.Header>Unfortunately, no winnings this time.</Card.Header>
             )}
             <ListGroup variant="flush">
-                <ListGroup.Item>Round number: {cookies.get('round')}</ListGroup.Item>
+                <ListGroup.Item>Round number: {cookies.get('round')+1}</ListGroup.Item>
                 <ListGroup.Item>Total odds: {totalOdds}</ListGroup.Item>
                 <ListGroup.Item>The bet amount: {totalWinning}</ListGroup.Item>
                 <ListGroup.Item>Winning amount: {winningAmount}</ListGroup.Item>
@@ -42,8 +43,7 @@ const BetResults = ({  checkedBets, ratio, totalWinning}) => {
                     <h3>Checked Bets:</h3>
                     <ul>
                         {checkedBets.map((bet, index) => (
-                            // להמשיך מכאן לנסות להביא את ההימורים לי מספר מחזור
-                            bet && bet.checkedBet && bet.checkedBet.status && bet.roundNumber === cookies.get('round') && (
+                            bet && bet.checkedBet && bet.checkedBet.status && (
                                 <li key={index}>
                                     <p>Game: {bet.checkedBet.game.homeTeam} vs {bet.checkedBet.game.awayTeam}</p>
                                     <p>Status: Correct</p>

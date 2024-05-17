@@ -107,6 +107,8 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
 
     return (
         <div>
+            <h2>The calculation of the bets is done as follows: The total odds of the bet is divided by the total bet,
+                multiplied by the total amount the user bet per game.</h2>
             {odds ? (
                 <div>
                     {Object.keys(odds).map((game, gameIndex) => (
@@ -122,11 +124,11 @@ const BettingOddsDisplay = ({ teams , index, gameClock }) => {
                            disabled={gameClock > 0}/>
                     <p>Potential return: {potentialReturn}</p>
                     <p>Total odds: {totalOdds}</p>
-                    <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} betPlaced={betPlaced} />
+                    <UserCoinsDisplay secretNewUser={secret} onCoinsChange={handleCoinsChange} betPlaced={betPlaced}/>
                     <AddBetButton secretNewUser={secret} selectedGames={selectedGames}
                                   handleButtonClick={handleButtonClick}
                                   rounds={rounds[index]} disabled={betPlaced || gameClock > 0}
-                                  betAmount={betAmount/betCount}
+                                  betAmount={betAmount / betCount}
                     />
                 </div>
             ) : (
